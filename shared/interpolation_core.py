@@ -23,6 +23,28 @@ def load_known_data(csv_path):
     
     return known_data
 
+def create_grid(region_bounds, resolution):
+    """Создает координатную сетку для региона"""
+    west = region_bounds['west']
+    east = region_bounds['east']
+    south = region_bounds['south']
+    north = region_bounds['north']
+    
+    # Расчет размеров растра
+    width = int((east - west) / resolution) + 1
+    height = int((north - south) / resolution) + 1
+    
+    # Создание сетки координат
+    lons = np.linspace(west, east, width)
+    lats = np.linspace(south, north, height)
+    
+    lons_grid, lats_grid = np.meshgrid(lons, lats)
+    
+    # Создание трансформации для GeoTIFF
+    transform = from_origin(west, north, resolution, resolution)
+    
+    return lons_grid, lats_grid, transform
+
 def calculate_distances_geod(target_lon, target_lat, known_lons, known_lats):
     """Векторизованный расчет расстояний с использованием pyproj.Geod"""
     geod = pyproj.Geod(ellps='WGS84')
