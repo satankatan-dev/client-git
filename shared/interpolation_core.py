@@ -77,6 +77,13 @@ def idw_interpolation(target_lon, target_lat, known_data, power=2.0):
     if weights_sum > 0:
         max_interpolated = np.sum(weights * known_data['max_values']) / weights_sum
         mean_interpolated = np.sum(weights * known_data['mean_values']) / weights_sum
+        
+        # Защита от nan
+        if np.isnan(max_interpolated):
+            max_interpolated = 0.0
+        if np.isnan(mean_interpolated):
+            mean_interpolated = 0.0
+            
         return max_interpolated, mean_interpolated
     else:
-        return np.nan, np.nan
+        return 0.0, 0.0  # Вместо nan возвращаем 0
